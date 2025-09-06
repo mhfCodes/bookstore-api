@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/books")
@@ -63,7 +64,7 @@ public class BookController {
         List<BookDto> books = iBookService.listAllBooks()
                 .stream()
                 .filter(b -> b.getStatus() == status)
-                .toList();
+                .collect(Collectors.toList());
         return ResponseEntity.ok(books);
     }
 
