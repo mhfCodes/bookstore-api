@@ -21,6 +21,14 @@ public class Book {
     public Book() {
     }
 
+    public Book(Long id, String title, String author, Double price, Status status) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }
