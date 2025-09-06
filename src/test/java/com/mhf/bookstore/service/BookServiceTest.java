@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
@@ -131,10 +132,50 @@ public class BookServiceTest {
 
     }
 
+    @Test
+    public void testDeleteBook() {
 
+        when(iBookRepository.findById(1L)).thenReturn(Optional.of(book));
 
+        bookService.deleteBook(1L);
 
+        verify(iBookRepository).delete(book);
 
+    }
 
+    @Test
+    public void testDeleteBook_bookNotFound() {
+
+        when (iBookRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> bookService.deleteBook(99L));
+
+    }
+
+    @Test
+    public void testMarkAsDiscontinued() {
+
+        Book updatedBook = new Book(1L, "The Best Book", "Mammad", 24.0, Status.DISCONTINUED);
+        BookDto updatedBookDto = new BookDto(1L, "The Best Book", "Mammad", 24.0, Status.DISCONTINUED);
+
+        when(iBookRepository.findById(1L)).thenReturn(Optional.of(book));
+        when(iBookRepository.save(any(Book.class))).thenReturn(updatedBook);
+        when(bookMapper.toDto(updatedBook)).thenReturn(updatedBookDto);
+
+        BookDto result = bookService.markAsDiscontinued(1L);
+
+        assertNotNull(result);
+        assertEquals(Status.DISCONTINUED, result.getStatus());
+
+    }
+
+    @Test
+    public void testMarkAsDiscontinued_bookNotFound() {
+
+        when(iBookRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> bookService.markAsDiscontinued(99L));
+
+    }
 
 }
