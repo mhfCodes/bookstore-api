@@ -2,6 +2,8 @@ package com.mhf.bookstore.model.book;
 
 public enum Status {
 
-    PENDING, DONE;
+    AVAILABLE,
+    OUT_OF_STOCK,
+    DISCONTINUED;
 
 }
