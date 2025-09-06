@@ -63,4 +63,12 @@ public class BookDto {
         this.price = price;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
 }
