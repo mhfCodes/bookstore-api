@@ -2,6 +2,7 @@ package com.mhf.bookstore.service.impl.book;
 
 import com.mhf.bookstore.dao.book.IBookRepository;
 import com.mhf.bookstore.dto.book.BookDto;
+import com.mhf.bookstore.exception.ResourceNotFoundException;
 import com.mhf.bookstore.mapper.book.BookMapper;
 import com.mhf.bookstore.model.book.Book;
 import com.mhf.bookstore.model.book.Status;
@@ -39,7 +40,7 @@ public class BookServiceImpl implements IBookService {
     @Override
     public BookDto getBookById(Long id) {
         Book book = iBookRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Book with id " + id + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
         return bookMapper.toDto(book);
     }
 
@@ -54,7 +55,7 @@ public class BookServiceImpl implements IBookService {
     @Override
     public BookDto updateBook(Long id, BookDto bookDto) {
         Book existingBook = iBookRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Book with id " + id + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
 
         existingBook.setTitle(bookDto.getTitle());
         existingBook.setAuthor(bookDto.getAuthor());
@@ -68,14 +69,14 @@ public class BookServiceImpl implements IBookService {
     @Override
     public void deleteBook(Long id) {
         Book existingBook = iBookRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Book with id " + id + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
         iBookRepository.delete(existingBook);
     }
 
     @Override
     public BookDto markAsDiscontinued(Long id) {
         Book existingBook = iBookRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Book with id " + id + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id " + id));
         existingBook.setStatus(Status.DISCONTINUED);
         Book update = iBookRepository.save(existingBook);
         return bookMapper.toDto(update);
