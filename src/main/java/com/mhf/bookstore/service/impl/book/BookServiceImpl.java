@@ -46,10 +46,7 @@ public class BookServiceImpl implements IBookService {
 
     @Override
     public List<BookDto> listAllBooks() {
-        return iBookRepository.findAll()
-                .stream()
-                .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+        return bookMapper.toDtoList(iBookRepository.findAll());
     }
 
     @Override
