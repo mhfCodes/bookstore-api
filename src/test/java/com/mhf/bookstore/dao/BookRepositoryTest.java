@@ -59,5 +59,19 @@ public class BookRepositoryTest {
         Optional<Book> deletedBook = iBookRepository.findById(book2.getId());
         assertFalse(deletedBook.isPresent());
     }
-    
+
+    @Test
+    public void testFindByTitleContainingIgnoreCase() {
+        List<Book> books = iBookRepository.findByTitleContainingIgnoreCase("java");
+        assertEquals(1, books.size());
+        assertEquals("Java Programming 101", books.get(0).getTitle());
+    }
+
+    @Test
+    public void testFindByStatus() {
+        List<Book> books = iBookRepository.findByStatus(Status.AVAILABLE);
+        assertEquals(1, books.size());
+        assertEquals(Status.AVAILABLE, books.get(0).getStatus());
+    }
+
 }
