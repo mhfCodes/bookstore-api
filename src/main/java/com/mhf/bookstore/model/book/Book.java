@@ -2,8 +2,6 @@ package com.mhf.bookstore.model.book;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-
 @Entity
 public class Book {
 
@@ -16,9 +14,6 @@ public class Book {
     private String author;
 
     private Double price;
-
-    @Column(unique = true, nullable = false)
-    private String isbn;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -56,14 +51,6 @@ public class Book {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 
     public Status getStatus() {
