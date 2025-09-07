@@ -151,6 +151,29 @@ public class BookControllerTest {
 
     }
 
+    @Test
+    public void testDiscontinueBook_ValidID() throws Exception {
+
+        BookDto updatedBookDto = new BookDto(1L, "Book Title", "Author", 19.99, Status.DISCONTINUED);
+
+        when(iBookService.markAsDiscontinued(1L)).thenReturn(updatedBookDto);
+
+        mockMvc.perform(patch("/api/books/{id}/discontinue", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("DISCONTINUED"));
+
+    }
+
+    @Test
+    public void testDiscontinueBook_InvalidID() throws Exception {
+
+        when(iBookService.markAsDiscontinued(99L)).thenThrow(new ResourceNotFoundException("Book no found"));
+
+        mockMvc.perform(patch("/api/books/{id}/discontinue", 99L))
+                .andExpect(status().isNotFound());
+
+    }
+
 
 
 }
