@@ -24,6 +24,13 @@ public class BookDto {
     public BookDto() {
     }
 
+    public BookDto(String title, String author, Double price, Status status) {
+        this.title = title;
+        this.author = author;
+        this.price = price;
+        this.status = status;
+    }
+
     public BookDto(Long id, String title, String author, Double price, Status status) {
         this.id = id;
         this.title = title;
