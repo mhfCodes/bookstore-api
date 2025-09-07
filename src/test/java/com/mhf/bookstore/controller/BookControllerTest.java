@@ -17,8 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -104,6 +103,36 @@ public class BookControllerTest {
         
     }
 
+    @Test
+    public void testUpdateBook_ValidID() throws Exception {
+
+        BookDto updatedBookDto = new BookDto(1L, "Updated Title", "Updated Author", 25.99, Status.AVAILABLE);
+        BookDto updatedResponse = new BookDto(1L, "Updated Title", "Updated Author", 25.99, Status.AVAILABLE);
+
+        when(iBookService.updateBook(eq(1L), argThat(b -> b.getId().equals(1L)))).thenReturn(updatedResponse);
+
+        mockMvc.perform(put("/api/books/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updatedBookDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Title"))
+                .andExpect(jsonPath("$.price").value(25.99));
+
+    }
+
+    @Test
+    public void testUpdateBook_InvalidID() throws Exception {
+
+        BookDto updatedBookDto = new BookDto(99L, "Nonexistent Book", "Nonexistent Author", 50.00, Status.AVAILABLE);
+
+        when(iBookService.updateBook(eq(99L), argThat(b -> b.getId().equals(99L)))).thenThrow(new ResourceNotFoundException("Book not found"));
+
+        mockMvc.perform(put("/api/books/{id}", 99L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(updatedBookDto)))
+                .andExpect(status().isNotFound());
+
+    }
 
 
 }
