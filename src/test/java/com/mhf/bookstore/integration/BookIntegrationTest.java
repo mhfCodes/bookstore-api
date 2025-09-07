@@ -53,5 +53,12 @@ public class BookIntegrationTest {
 
     }
 
+    // Helper method to create a book directly in DB
+    private BookDto createBookInDb(String title, Status status) {
+        BookDto book = new BookDto(null, title, "Author", 20.0, status);
+        ResponseEntity<BookDto> response = testRestTemplate.postForEntity(baseUrl, book, BookDto.class);
+        return response.getBody();
+    }
+
 
 }
