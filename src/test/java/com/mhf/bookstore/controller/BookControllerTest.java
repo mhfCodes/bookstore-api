@@ -18,8 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -133,6 +132,25 @@ public class BookControllerTest {
                 .andExpect(status().isNotFound());
 
     }
+
+    @Test
+    public void testDeleteBook_ValidId() throws Exception {
+
+        mockMvc.perform(delete("/api/books/{id}", 1L))
+                .andExpect(status().isNoContent());
+
+    }
+
+    @Test
+    public void testDeleteBook_InvalidID() throws Exception {
+
+        doThrow(new ResourceNotFoundException("Book not found")).when(iBookService).deleteBook(99L);
+
+        mockMvc.perform(delete("/api/books/{id}", 99L))
+                .andExpect(status().isNotFound());
+
+    }
+
 
 
 }
