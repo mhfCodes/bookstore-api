@@ -53,12 +53,22 @@ public class BookIntegrationTest {
 
     }
 
+    @Test
+    public void testGetBookById() {
+
+        BookDto book = createBookInDb("Get Book", Status.AVAILABLE);
+        ResponseEntity<BookDto> response = testRestTemplate.getForEntity(baseUrl + "/" + book.getId(), BookDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getTitle()).isEqualTo("Get Book");
+
+    }
+
     // Helper method to create a book directly in DB
     private BookDto createBookInDb(String title, Status status) {
         BookDto book = new BookDto(null, title, "Author", 20.0, status);
         ResponseEntity<BookDto> response = testRestTemplate.postForEntity(baseUrl, book, BookDto.class);
         return response.getBody();
     }
-
 
 }
