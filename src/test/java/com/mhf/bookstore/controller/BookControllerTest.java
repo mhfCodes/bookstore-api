@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -84,4 +87,23 @@ public class BookControllerTest {
                 .andExpect(status().isNotFound());
 
     }
+
+    @Test
+    public void testGetAllBooks() throws Exception {
+
+        List<BookDto> books = Arrays.asList(
+                new BookDto(1L, "Book One", "Author", 19.99, Status.AVAILABLE),
+                new BookDto(2L, "Book Two", "Author", 29.99, Status.AVAILABLE)
+        );
+
+        when(iBookService.listAllBooks()).thenReturn(books);
+
+        mockMvc.perform(get("/api/books"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2));
+        
+    }
+
+
+
 }
