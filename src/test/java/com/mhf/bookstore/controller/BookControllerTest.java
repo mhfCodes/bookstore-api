@@ -174,6 +174,21 @@ public class BookControllerTest {
 
     }
 
+    @Test
+    public void testGetBooksByStatus() throws Exception {
 
+        List<BookDto> bookDtos = Arrays.asList(
+                new BookDto(1L, "Book One", "Author", 19.99, Status.AVAILABLE),
+                new BookDto(2L, "Book Two", "Author", 29.99, Status.AVAILABLE)
+        );
+
+        when(iBookService.getBooksByStatus(Status.AVAILABLE)).thenReturn(bookDtos);
+
+        mockMvc.perform(get("/api/books/status/{status}", Status.AVAILABLE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$.[0].status").value("AVAILABLE"));
+
+    }
 
 }

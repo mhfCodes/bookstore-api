@@ -79,4 +79,12 @@ public class BookServiceImpl implements IBookService {
         return bookMapper.toDto(update);
     }
 
+    @Override
+    public List<BookDto> getBooksByStatus(Status status) {
+        return this.listAllBooks()
+                .stream()
+                .filter(b -> b.getStatus() == status)
+                .collect(Collectors.toList());
+    }
+
 }

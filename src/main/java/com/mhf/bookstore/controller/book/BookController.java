@@ -61,10 +61,7 @@ public class BookController {
 
     @GetMapping("/status/{status}")
     public ResponseEntity<List<BookDto>> getBooksByStatus(@PathVariable Status status) {
-        List<BookDto> books = iBookService.listAllBooks()
-                .stream()
-                .filter(b -> b.getStatus() == status)
-                .collect(Collectors.toList());
+        List<BookDto> books = iBookService.getBooksByStatus(status);
         return ResponseEntity.ok(books);
     }
 
