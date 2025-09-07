@@ -12,6 +12,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -110,6 +113,20 @@ public class BookIntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
 
         assertThat(iBookRepository.findById(book.getId())).isEmpty();
+
+    }
+
+    @Test
+    public void testListAllBooks() {
+
+        createBookInDb("Book 1", Status.AVAILABLE);
+        createBookInDb("Book 2", Status.DISCONTINUED);
+
+        ResponseEntity<BookDto[]> response = testRestTemplate.getForEntity(baseUrl, BookDto[].class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        List<BookDto> books = Arrays.asList(response.getBody());
+        assertThat(books.size()).isEqualTo(2);
 
     }
 
