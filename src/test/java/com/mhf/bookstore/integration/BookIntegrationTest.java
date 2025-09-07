@@ -83,6 +83,24 @@ public class BookIntegrationTest {
 
     }
 
+    @Test
+    public void testPathStatus() {
+
+        BookDto book = createBookInDb("Path Book", Status.AVAILABLE);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<BookDto> response = testRestTemplate.exchange(baseUrl + "/" + book.getId() + "/discontinue", HttpMethod.PATCH, entity, BookDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getStatus()).isEqualTo(Status.DISCONTINUED);
+
+        BookDto dbBook = testRestTemplate.getForObject(baseUrl + "/" + book.getId(), BookDto.class);
+        assertThat(dbBook.getStatus()).isEqualTo(Status.DISCONTINUED);
+
+    }
+
     // Helper method to create a book directly in DB
     private BookDto createBookInDb(String title, Status status) {
         BookDto book = new BookDto(null, title, "Author", 20.0, status);
