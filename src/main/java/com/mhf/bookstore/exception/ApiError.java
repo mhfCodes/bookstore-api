@@ -18,6 +18,13 @@ public class ApiError {
         this.timestamp = LocalDateTime.now();
     }
 
+    public ApiError(int status, String error, String message) {
+        this();
+        this.status = status;
+        this.error = error;
+        this.message = message;
+    }
+
     public ApiError(int status, String error, String message, String path) {
         this();
         this.status = status;
