@@ -101,6 +101,18 @@ public class BookIntegrationTest {
 
     }
 
+    @Test
+    public void testDeleteBook() {
+
+        BookDto book = createBookInDb("Delete Book", Status.AVAILABLE);
+
+        ResponseEntity<Void> response = testRestTemplate.exchange(baseUrl + "/" + book.getId(), HttpMethod.DELETE, null, Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        assertThat(iBookRepository.findById(book.getId())).isEmpty();
+
+    }
+
     // Helper method to create a book directly in DB
     private BookDto createBookInDb(String title, Status status) {
         BookDto book = new BookDto(null, title, "Author", 20.0, status);
