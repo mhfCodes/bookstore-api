@@ -3,6 +3,7 @@ package com.mhf.bookstore.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mhf.bookstore.controller.book.BookController;
 import com.mhf.bookstore.dto.book.BookDto;
+import com.mhf.bookstore.exception.ResourceNotFoundException;
 import com.mhf.bookstore.model.book.Status;
 import com.mhf.bookstore.service.book.IBookService;
 import org.junit.jupiter.api.Test;
@@ -59,5 +60,28 @@ public class BookControllerTest {
 
     }
 
+    @Test
+    public void testGetBookById_ValidID() throws Exception {
 
+        BookDto bookDto = new BookDto(1L, "Book Title", "Author", 19.99, Status.AVAILABLE);
+
+        when(iBookService.getBookById(1L)).thenReturn(bookDto);
+
+        mockMvc.perform(get("/api/books/{id}", 1L))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("Book Title"));
+
+    }
+
+
+    @Test
+    public void testGetBookById_InvalidID() throws Exception {
+
+        when(iBookService.getBookById(99L)).thenThrow(new ResourceNotFoundException("Book not found"));
+
+        mockMvc.perform(get("/api/books/{id}", 99L))
+                .andExpect(status().isNotFound());
+
+    }
 }
