@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,6 +60,26 @@ public class BookIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getTitle()).isEqualTo("Get Book");
+
+    }
+
+    @Test
+    public void testUpdateBook() throws Exception {
+
+        BookDto oldBook = createBookInDb("Old Title", Status.AVAILABLE);
+
+        BookDto updatedBook = new BookDto(null, "Updated Title", "Updated Author", 25.0, Status.AVAILABLE);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(updatedBook), headers);
+
+        ResponseEntity<BookDto> response = testRestTemplate.exchange(baseUrl + "/" + oldBook.getId(), HttpMethod.PUT, entity, BookDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody().getTitle()).isEqualTo("Updated Title");
+
+        BookDto dbBook = testRestTemplate.getForObject(baseUrl + "/" + oldBook.getId(), BookDto.class);
+        assertThat(dbBook.getAuthor()).isEqualTo("Updated Author");
+        assertThat(dbBook.getPrice()).isEqualTo(25.0);
 
     }
 
